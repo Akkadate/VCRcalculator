@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณโซนความเร็ววิ่ง (VCR Calculator)</title>
+    <!-- Google Fonts: Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+        /* Hide number input arrows for better UI */
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full border border-gray-200 transform transition-all duration-300 hover:scale-[1.01]">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 leading-tight">
+            <span class="block text-blue-700">คำนวณโซนความเร็ววิ่ง</span>
+            <span class="block text-xl font-normal text-gray-600 mt-1">(VCR Calculator สำหรับนักวิ่ง)</span>
+        </h1>
+
+        <!-- Input for D1 value (Distance for first run) -->
+        <div class="mb-4">
+            <label for="d1Input" class="block text-gray-700 text-lg font-medium mb-2">
+                ป้อนระยะทางแรก D1 (เมตร):
+            </label>
+            <input
+                type="number"
+                id="d1Input"
+                step="1"
+                placeholder="เช่น 600"
+                class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-center text-xl outline-none transition-all duration-200"
+            >
+        </div>
+
+        <!-- Input for T1 value (Time for D1) -->
+        <div class="mb-4">
+            <label for="t1Input" class="block text-gray-700 text-lg font-medium mb-2">
+                ป้อนเวลา T1 สำหรับ D1 (นาที):
+            </label>
+            <input
+                type="number"
+                id="t1Input"
+                step="0.01"
+                placeholder="เช่น 2.5 (2 นาที 30 วินาที)"
+                class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-center text-xl outline-none transition-all duration-200"
+            >
+        </div>
+
+        <!-- Input for D2 value (Distance for second run) -->
+        <div class="mb-4">
+            <label for="d2Input" class="block text-gray-700 text-lg font-medium mb-2">
+                ป้อนระยะทางที่สอง D2 (เมตร):
+            </label>
+            <input
+                type="number"
+                id="d2Input"
+                step="1"
+                placeholder="เช่น 1200"
+                class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-center text-xl outline-none transition-all duration-200"
+            >
+        </div>
+
+        <!-- Input for T2 value (Time for D2) -->
+        <div class="mb-6">
+            <label for="t2Input" class="block text-gray-700 text-lg font-medium mb-2">
+                ป้อนเวลา T2 สำหรับ D2 (นาที):
+            </label>
+            <input
+                type="number"
+                id="t2Input"
+                step="0.01"
+                placeholder="เช่น 5.0 (5 นาที 00 วินาที)"
+                class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-center text-xl outline-none transition-all duration-200"
+            >
+        </div>
+
+        <!-- Calculate Button -->
+        <button
+            onclick="calculatePaces()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        >
+            คำนวณโซนความเร็ว
+        </button>
+
+        <!-- Results Display Area -->
+        <div id="results" class="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-inner hidden">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4 text-center">ผลลัพธ์การคำนวณโซนความเร็ว</h2>
+            <div class="space-y-3">
+                <p class="text-gray-700 text-lg">
+                    <span class="font-medium text-blue-700">VCR ของคุณ:</span> <span id="displayVCR" class="font-bold text-gray-900"></span> เมตร/วินาที
+                </p>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center">
+                    <p class="text-gray-700 text-lg font-medium text-blue-700">Easy Run (70% VCR):</p>
+                    <p class="font-bold text-blue-600 text-xl" id="easyRunPace"></p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center">
+                    <p class="text-gray-700 text-lg font-medium text-blue-700">Endurance Run (85-90% VCR):</p>
+                    <p class="font-bold text-green-600 text-xl" id="endurancePace"></p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center">
+                    <p class="text-gray-700 text-lg font-medium text-blue-700">Tempo Run (97% VCR):</p>
+                    <p class="font-bold text-yellow-600 text-xl" id="tempoPace"></p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center">
+                    <p class="text-gray-700 text-lg font-medium text-blue-700">Extensive Interval (>100% VCR):</p>
+                    <p class="font-bold text-red-600 text-xl" id="extensivePace"></p>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-3 text-center">
+                *ใช้ค่า 105%-110% VCR สำหรับช่วง Extensive Interval
+            </p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden text-center" role="alert">
+            <p class="font-bold mb-1">เกิดข้อผิดพลาด!</p>
+            <p id="errorText"></p>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Converts speed from meters/second to minutes/kilometer pace format.
+         * แปลงความเร็วจากเมตร/วินาที เป็น Pace หน่วยนาที/กิโลเมตร
+         * @param {number} speedMs - Speed in meters per second. ความเร็วในหน่วยเมตรต่อวินาที
+         * @returns {string} Pace in "MM:SS" format, or "N/A" if invalid. Pace ในรูปแบบ "MM:SS" หรือ "N/A" หากไม่ถูกต้อง
+         */
+        function convertMsToPace(speedMs) {
+            if (isNaN(speedMs) || speedMs <= 0) {
+                return 'N/A';
+            }
+            // 1 km = 1000 meters
+            // pace (seconds/km) = 1000 / speed (m/s)
+            const totalSecondsPerKm = 1000 / speedMs;
+
+            const minutes = Math.floor(totalSecondsPerKm / 60);
+            const seconds = Math.round(totalSecondsPerKm % 60);
+
+            // Format seconds to always have two digits (e.g., 5 -> 05)
+            const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+
+            return `${minutes}:${formattedSeconds}`;
+        }
+
+        /**
+         * Displays an error message to the user.
+         * แสดงข้อความข้อผิดพลาดแก่ผู้ใช้
+         * @param {string} message - The error message to display. ข้อความข้อผิดพลาดที่จะแสดง
+         */
+        function showErrorMessage(message) {
+            document.getElementById('errorMessage').classList.remove('hidden');
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('results').classList.add('hidden'); // Hide results if error occurs ซ่อนผลลัพธ์หากเกิดข้อผิดพลาด
+        }
+
+        /**
+         * Hides the error message.
+         * ซ่อนข้อความข้อผิดพลาด
+         */
+        function hideErrorMessage() {
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('errorText').textContent = '';
+        }
+
+        /**
+         * Calculates and displays the running paces based on the D1, D2, T1, and T2 inputs.
+         * คำนวณและแสดง Pace การวิ่งตามค่า D1, D2, T1 และ T2 ที่ป้อนเข้ามา
+         */
+        function calculatePaces() {
+            const d1Meters = parseFloat(document.getElementById('d1Input').value);
+            const t1Minutes = parseFloat(document.getElementById('t1Input').value);
+            const d2Meters = parseFloat(document.getElementById('d2Input').value);
+            const t2Minutes = parseFloat(document.getElementById('t2Input').value);
+
+            // Convert minutes to seconds for calculation
+            const t1Seconds = t1Minutes * 60;
+            const t2Seconds = t2Minutes * 60;
+
+            // Validate inputs
+            if (isNaN(d1Meters) || isNaN(t1Minutes) || isNaN(d2Meters) || isNaN(t2Minutes) ||
+                d1Meters <= 0 || t1Minutes <= 0 || d2Meters <= 0 || t2Minutes <= 0) {
+                showErrorMessage('กรุณาป้อนค่าที่ถูกต้อง (ตัวเลขบวก) สำหรับทุกช่อง');
+                return;
+            }
+
+            if (d2Meters <= d1Meters) {
+                showErrorMessage('ระยะทางที่สอง (D2) ต้องมากกว่าระยะทางแรก (D1)');
+                return;
+            }
+
+            if (t2Seconds <= t1Seconds) {
+                showErrorMessage('เวลาสำหรับระยะทางที่สอง (T2) ต้องมากกว่าเวลาสำหรับระยะทางแรก (T1)');
+                return;
+            }
+
+            // Calculate VCR using the formula: VCR = (D2 - D1) / (T2_seconds - T1_seconds)
+            const vcrValue = (d2Meters - d1Meters) / (t2Seconds - t1Seconds);
+
+            hideErrorMessage(); // Clear any previous errors
+            document.getElementById('results').classList.remove('hidden'); // Show results section
+
+            // Display the calculated VCR value
+            document.getElementById('displayVCR').textContent = vcrValue.toFixed(2);
+
+            // Calculate Easy Run Pace (70% of VCR)
+            const easyRunSpeed = vcrValue * 0.70;
+            document.getElementById('easyRunPace').textContent = convertMsToPace(easyRunSpeed);
+
+            // 1. Calculate Endurance Run Pace (85-90% of VCR)
+            const enduranceMinSpeed = vcrValue * 0.85;
+            const enduranceMaxSpeed = vcrValue * 0.90;
+            // Note: Faster pace comes from higher speed (max percentage)
+            const endurancePaceMin = convertMsToPace(enduranceMaxSpeed); // Pace for 90% VCR
+            const endurancePaceMax = convertMsToPace(enduranceMinSpeed); // Pace for 85% VCR
+            document.getElementById('endurancePace').textContent = `${endurancePaceMin} - ${endurancePaceMax}`;
+
+            // 2. Calculate Tempo Run Pace (97% of VCR)
+            const tempoSpeed = vcrValue * 0.97;
+            document.getElementById('tempoPace').textContent = convertMsToPace(tempoSpeed);
+
+            // 3. Calculate Extensive Interval Pace (>100% of VCR, using 105% and 110% for example)
+            const extensiveMinSpeed = vcrValue * 1.05; // Example: 105% of VCR
+            const extensiveMaxSpeed = vcrValue * 1.10; // Example: 110% of VCR
+            // Note: Faster pace comes from higher speed (max percentage)
+            const extensivePaceMin = convertMsToPace(extensiveMaxSpeed); // Pace for 110% VCR
+            const extensivePaceMax = convertMsToPace(extensiveMinSpeed); // Pace for 105% VCR
+            document.getElementById('extensivePace').textContent = `${extensivePaceMin} - ${extensivePaceMax}`;
+        }
+    </script>
+</body>
+</html>
