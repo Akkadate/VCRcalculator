@@ -49,15 +49,18 @@
         <!-- Input for T1 value (Time for D1) -->
         <div class="mb-4">
             <label for="t1Input" class="block text-gray-700 text-lg font-medium mb-2">
-                ป้อนเวลา T1 สำหรับ D1 (นาที):
+                ป้อนเวลา T1 สำหรับ D1 (วินาที):
             </label>
             <input
                 type="number"
                 id="t1Input"
-                step="0.01"
-                placeholder="เช่น 2.5 (2 นาที 30 วินาที)"
+                step="1"
+                placeholder="เช่น 150 สำหรับ 2 นาที 30 วินาที"
                 class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-center text-xl outline-none transition-all duration-200"
             >
+            <p class="text-gray-500 text-sm mt-1 text-center">
+                *ป้อนเวลาเป็นวินาทีทั้งหมด (เช่น 150 สำหรับ 2 นาที 30 วินาที, 225 สำหรับ 3 นาที 45 วินาที)
+            </p>
         </div>
 
         <!-- Input for D2 value (Distance for second run) -->
@@ -77,15 +80,18 @@
         <!-- Input for T2 value (Time for D2) -->
         <div class="mb-6">
             <label for="t2Input" class="block text-gray-700 text-lg font-medium mb-2">
-                ป้อนเวลา T2 สำหรับ D2 (นาที):
+                ป้อนเวลา T2 สำหรับ D2 (วินาที):
             </label>
             <input
                 type="number"
                 id="t2Input"
-                step="0.01"
-                placeholder="เช่น 5.0 (5 นาที 00 วินาที)"
+                step="1"
+                placeholder="เช่น 300 สำหรับ 5 นาที 00 วินาที"
                 class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-center text-xl outline-none transition-all duration-200"
             >
+            <p class="text-gray-500 text-sm mt-1 text-center">
+                *ป้อนเวลาเป็นวินาทีทั้งหมด (เช่น 300 สำหรับ 5 นาที 00 วินาที, 375 สำหรับ 6 นาที 15 วินาที)
+            </p>
         </div>
 
         <!-- Calculate Button -->
@@ -129,6 +135,69 @@
         <div id="errorMessage" class="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden text-center" role="alert">
             <p class="font-bold mb-1">เกิดข้อผิดพลาด!</p>
             <p id="errorText"></p>
+        </div>
+
+        <!-- Toggle Manual Button -->
+        <button
+            onclick="toggleManual()"
+            class="w-full mt-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+        >
+            <span id="manualButtonText">แสดงคู่มือการใช้งานและหลักการคำนวณ</span>
+        </button>
+
+        <!-- User Manual and Calculation Principles Section -->
+        <div id="manualSection" class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200 shadow-inner hidden">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">คู่มือการใช้งานและหลักการคำนวณ</h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">การใช้งานแอปพลิเคชัน:</h3>
+                <ol class="list-decimal list-inside text-gray-700 space-y-2">
+                    <li>**ป้อนระยะทางแรก D1 (เมตร):** กรอกระยะทางที่คุณวิ่งในครั้งแรก (เช่น 400-1200 เมตร). ระยะทางควรเป็นระยะที่คุณสามารถวิ่งด้วยความเร็วสูงแต่ไม่ถึงกับหมดแรง.</li>
+                    <li>**ป้อนเวลา T1 สำหรับ D1 (วินาที):** กรอกเวลาที่ใช้ในการวิ่งระยะ D1 <span class="font-semibold text-blue-600">หน่วยเป็นวินาทีทั้งหมด (เช่น 150 สำหรับ 2 นาที 30 วินาที, 225 สำหรับ 3 นาที 45 วินาที)</span></li>
+                    <li>**ป้อนระยะทางที่สอง D2 (เมตร):** กรอกระยะทางที่คุณวิ่งในครั้งที่สอง ซึ่งต้องมากกว่า D1 (เช่น 800-3000 เมตร). D2 ควรเป็นระยะที่ยาวกว่า D1 และคุณสามารถรักษาระดับความเร็วได้.</li>
+                    <li>**ป้อนเวลา T2 สำหรับ D2 (วินาที):** กรอกเวลาที่ใช้ในการวิ่งระยะ D2 ซึ่งต้องมากกว่า T1 <span class="font-semibold text-blue-600">หน่วยเป็นวินาทีทั้งหมด (เช่น 300 สำหรับ 5 นาที 00 วินาที, 375 สำหรับ 6 นาที 15 วินาที)</span></li>
+                    <li>**คลิก "คำนวณโซนความเร็ว":** แอปจะคำนวณค่า VCR และโซนความเร็วต่างๆ ของคุณโดยอัตโนมัติ.</li>
+                    <li>**ดูผลลัพธ์:** ผลลัพธ์จะแสดงค่า VCR ของคุณ และ Pace สำหรับแต่ละโซนการวิ่งในหน่วย นาที/กิโลเมตร.</li>
+                </ol>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">หลักการคำนวณ VCR:</h3>
+                <p class="text-gray-700 mb-2">
+                    VCR (Critical Velocity) คือ ความเร็ววิกฤต เป็นความเร็วสูงสุดที่คุณสามารถรักษาระดับการวิ่งได้เป็นเวลานานโดยไม่สะสมกรดแลคติกมากเกินไป. การคำนวณ VCR ใช้สูตร:
+                </p>
+                <p class="font-bold text-center text-lg text-blue-700 bg-blue-100 p-3 rounded-md shadow-sm">
+                    VCR = (D2 - D1) / (T2_seconds - T1_seconds)
+                </p>
+                <ul class="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                    <li>**D1:** ระยะทางวิ่งครั้งแรก (เมตร)</li>
+                    <li>**D2:** ระยะทางวิ่งครั้งที่สอง (เมตร)</li>
+                    <li>**T1_seconds:** เวลาที่ใช้สำหรับ D1 (วินาที)</li>
+                    <li>**T2_seconds:** เวลาที่ใช้สำหรับ D2 (วินาที)</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">หลักการคำนวณ Pace ในแต่ละโซน:</h3>
+                <p class="text-gray-700 mb-2">
+                    Pace (นาที/กิโลเมตร) คำนวณจากความเร็ว (เมตร/วินาที) โดยใช้สูตร:
+                </p>
+                <p class="font-bold text-center text-lg text-blue-700 bg-blue-100 p-3 rounded-md shadow-sm">
+                    Pace (วินาที/กิโลเมตร) = 1000 / ความเร็ว (เมตร/วินาที)
+                </p>
+                <p class="text-gray-700 mt-2">
+                    จากนั้นแปลงวินาทีเป็นนาทีและวินาที.
+                </p>
+                <ul class="list-disc list-inside text-gray-700 mt-4 space-y-2">
+                    <li>**Easy Run:** คำนวณที่ 70% ของค่า VCR.</li>
+                    <li>**Endurance Run:** คำนวณในช่วง 85% ถึง 90% ของค่า VCR.</li>
+                    <li>**Tempo Run:** คำนวณที่ 97% ของค่า VCR.</li>
+                    <li>**Extensive Interval:** คำนวณในช่วง 105% ถึง 110% ของค่า VCR.</li>
+                </ul>
+                <p class="text-gray-600 text-sm mt-3">
+                    <span class="font-semibold">ข้อควรจำ:</span> Pace เหล่านี้เป็นค่าแนะนำสำหรับการฝึกซ้อม ควรปรับตามความรู้สึกและสภาพร่างกายของคุณในแต่ละวัน หากมีโค้ช ควรปรึกษาโค้ชเพื่อการวางแผนการฝึกที่เหมาะสมที่สุด.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -182,17 +251,15 @@
          */
         function calculatePaces() {
             const d1Meters = parseFloat(document.getElementById('d1Input').value);
-            const t1Minutes = parseFloat(document.getElementById('t1Input').value);
+            // T1 is now directly in seconds
+            const t1Seconds = parseFloat(document.getElementById('t1Input').value);
             const d2Meters = parseFloat(document.getElementById('d2Input').value);
-            const t2Minutes = parseFloat(document.getElementById('t2Input').value);
-
-            // Convert minutes to seconds for calculation
-            const t1Seconds = t1Minutes * 60;
-            const t2Seconds = t2Minutes * 60;
+            // T2 is now directly in seconds
+            const t2Seconds = parseFloat(document.getElementById('t2Input').value);
 
             // Validate inputs
-            if (isNaN(d1Meters) || isNaN(t1Minutes) || isNaN(d2Meters) || isNaN(t2Minutes) ||
-                d1Meters <= 0 || t1Minutes <= 0 || d2Meters <= 0 || t2Minutes <= 0) {
+            if (isNaN(d1Meters) || isNaN(t1Seconds) || isNaN(d2Meters) || isNaN(t2Seconds) ||
+                d1Meters <= 0 || t1Seconds <= 0 || d2Meters <= 0 || t2Seconds <= 0) {
                 showErrorMessage('กรุณาป้อนค่าที่ถูกต้อง (ตัวเลขบวก) สำหรับทุกช่อง');
                 return;
             }
@@ -239,6 +306,22 @@
             const extensivePaceMin = convertMsToPace(extensiveMaxSpeed); // Pace for 110% VCR
             const extensivePaceMax = convertMsToPace(extensiveMinSpeed); // Pace for 105% VCR
             document.getElementById('extensivePace').textContent = `${extensivePaceMin} - ${extensivePaceMax}`;
+        }
+
+        /**
+         * Toggles the visibility of the manual section.
+         * สลับการแสดงผลของส่วนคู่มือการใช้งาน
+         */
+        function toggleManual() {
+            const manualSection = document.getElementById('manualSection');
+            const manualButtonText = document.getElementById('manualButtonText');
+            if (manualSection.classList.contains('hidden')) {
+                manualSection.classList.remove('hidden');
+                manualButtonText.textContent = 'ซ่อนคู่มือการใช้งานและหลักการคำนวณ';
+            } else {
+                manualSection.classList.add('hidden');
+                manualButtonText.textContent = 'แสดงคู่มือการใช้งานและหลักการคำนวณ';
+            }
         }
     </script>
 </body>
